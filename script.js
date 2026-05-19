@@ -5,44 +5,55 @@ const enhanceBtn = document.getElementById("enhanceBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 const loading = document.getElementById("loading");
 
-let imageURL = "";
+const API_KEY = "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";
 
+let fileData = null;
+
+// Upload image
 input.addEventListener("change", () => {
   const file = input.files[0];
   if (!file) return;
 
-  imageURL = URL.createObjectURL(file);
-  beforeImg.src = imageURL;
+  fileData = file;
+  beforeImg.src = URL.createObjectURL(file);
 });
 
-enhanceBtn.addEventListener("click", () => {
-  if (!imageURL) return alert("Upload image first!");
+// REAL AI ENHANCEMENT
+enhanceBtn.addEventListener("click", async () => {
+  if (!fileData) return alert("Upload image first!");
 
   loading.style.display = "block";
 
-  setTimeout(() => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+  try {
+    const response = await fetch(
+      "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-x4-upscaler",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + API_KEY
+        },
+        body: fileData
+      }
+    );
 
-    const img = new Image();
-    img.src = imageURL;
+    if (!response.ok) {
+      throw new Error("API Error");
+    }
 
-    img.onload = () => {
-      canvas.width = img.width * 2;
-      canvas.height = img.height * 2;
+    const blob = await response.blob();
+    const imageURL = URL.createObjectURL(blob);
 
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = "high";
+    afterImg.src = imageURL;
+    downloadBtn.disabled = false;
 
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
 
-      afterImg.src = canvas.toDataURL();
-      loading.style.display = "none";
-      downloadBtn.disabled = false;
-    };
-  }, 1500);
+  loading.style.display = "none";
 });
 
+// Download
 downloadBtn.addEventListener("click", () => {
   const link = document.createElement("a");
   link.href = afterImg.src;
