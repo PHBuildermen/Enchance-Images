@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Image Enhancer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>AI Image Enhancer</h1>
+<p class="desc">
+Image enhancement improves the quality, sharpness, and resolution of a photo using AI techniques while preserving its natural appearance.
+</p>
+
+<div class="upload-box" id="dropZone">
+  <p>Drag & Drop Image</p>
+  <input type="file" id="imageInput" accept="image/*">
+</div>
+
+<div class="buttons">
+  <button id="enhanceBtn">✨ Enhance</button>
+  <button id="downloadBtn" disabled>⬇ Download</button>
+</div>
+
+<div class="preview">
+  <div>
+    <h3>Before</h3>
+    <img id="beforeImg">
+  </div>
+
+  <div>
+    <h3>After</h3>
+    <img id="afterImg">
+  </div>
+</div>
+
+<div id="loading">Enhancing...</div>
+
+<script src="script.js"></script>
+</body>
+</html>
